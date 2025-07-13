@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+
+    // Add preferences
+    preferences: {
+        categories: [String],  // e.g., ["technology", "sports"]
+        language: { type: String, default: 'en' }  // e.g., "en", "hi"
     }
 });
 
