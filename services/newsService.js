@@ -1,4 +1,5 @@
 const axios = require('axios');
+const config = require('../config/config');
 
 /**
  * Fetch news articles based on user preferences
@@ -7,12 +8,12 @@ const axios = require('axios');
  * @returns {Promise<Object[]>} - Array of formatted news articles
  */
 const getNewsFromAPI = async (categories, language = 'en') => {
-  if (!process.env.NEWS_API_KEY) {
+  if (!config.newsApiKey) {
     throw new Error('Missing NEWS_API_KEY in environment variables');
   }
 
   const query = categories.join(' OR ');
-  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=${language}&pageSize=10&apiKey=${process.env.NEWS_API_KEY}`;
+  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=${language}&pageSize=10&apiKey=${config.newsApiKey}`;
 
   const response = await axios.get(url);
 

@@ -1,26 +1,32 @@
 exports.getPreferences = async (req, res) => {
   try {
-    const { preferences } = req.user;
-    res.status(200).json({ preferences });
+    var preferences = req.user.preferences;
+    console.log("Fetching preferences for user:", req.user.id, "Preferences:", preferences);
+    return res.status(200).json({
+      preferences: preferences,
+    });
   } catch (err) {
     console.error('Get Pref Error:', err.message);
-    res.status(500).json({ message: 'Server error fetching preferences' });
+    return res.status(500).json({ message: 'Server error fetching preferences' });
   }
 };
 
+// PUT update user preferences (handles { preferences: [...] } input)
 exports.updatePreferences = async (req, res) => {
-  const { categories, language } = req.body;
-
   try {
-    req.user.preferences = {
-      categories: categories || req.user.preferences.categories,
-      language: language || req.user.preferences.language,
-    };
+    const { preferences } = req.body;
+    if (!Array.isArray(preferences)) {
+      return res.status(400).json({ message: 'Preferences must be an array.' });
+    }
 
-    await req.user.save();
-    res.status(200).json({ message: 'Preferences updated', preferences: req.user.preferences });
+    req.user.updatePreferences(preferences);
+
+    return res.status(200).json({
+      message: 'Preferences updated',
+      preferences: req.user.preferences,
+    });
   } catch (err) {
     console.error('Update Pref Error:', err.message);
-    res.status(500).json({ message: 'Server error updating preferences' });
+    return res.status(500).json({ message: 'Server error updating preferences' });
   }
 };
