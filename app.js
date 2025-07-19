@@ -10,9 +10,9 @@ const config = require('./config/config');
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
-app.use(requestLogger);
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// Health Check Endpoint
 app.get('/', (req, res) => {
     res.send('Welcome to the News Aggregator API');
 });
