@@ -35,7 +35,7 @@ axios (for external news fetching)
 │   └── newsController.js        # Handles fetching news based on preferences
 ├── 📂 middlewares
 │   ├── authMiddleware.js        # JWT authentication middleware
-│   ├── requestLogger.js         # Logs incoming requests
+│   ├── requestLogger.js         # Logs incoming requests - Oprional to use while development
 │   └── 📂 validators             # Input validation middlewares
 ├── 📂 routes
 │   ├── authRoutes.js            # Routes for user auth (signup/login)

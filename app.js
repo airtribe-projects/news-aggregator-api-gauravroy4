@@ -2,7 +2,6 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 
-const requestLogger = require('./middlewares/requestLogger');
 const authRoutes = require('./routes/authRoutes');
 const preferencesRoutes = require('./routes/preferencesRoutes');
 const newsRoutes = require('./routes/newsRoutes');
@@ -18,6 +17,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
+
+//const requestLogger = require('./middlewares/requestLogger');
 
 // Routes
 app.get('/', (req, res) => {
