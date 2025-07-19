@@ -9,7 +9,7 @@ exports.fetchNews = async (req, res) => {
 
     const articles = await getNewsFromAPI(preferences);
 
-    return res.status(200).json({ news: articles }); // ✅ return 'news' key as expected
+    return res.status(200).json({ news: articles });
   } catch (error) {
     console.error('News Fetch Error:', error.message);
     const status = error.response?.status || 500;
