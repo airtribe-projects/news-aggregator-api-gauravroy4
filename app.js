@@ -16,9 +16,9 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(requestLogger);
 
-//const requestLogger = require('./middlewares/requestLogger');
+// const requestLogger = require('./middlewares/requestLogger');
+// app.use(requestLogger);
 
 // Routes
 app.get('/', (req, res) => {
