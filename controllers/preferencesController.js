@@ -17,7 +17,7 @@ exports.updatePreferences = async (req, res) => {
       return res.status(400).json({ message: 'Preferences must be an array.' });
     }
 
-    req.user.updatePreferences(preferences);
+    await req.user.updatePreferences(preferences);
 
     return res.status(200).json({
       message: 'Preferences updated',

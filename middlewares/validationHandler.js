@@ -1,5 +1,3 @@
-// Centralized Error Handler for Validation
-
 const { validationResult } = require('express-validator');
 
 const handleValidationErrors = (req, res, next) => {
