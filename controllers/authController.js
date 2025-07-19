@@ -1,90 +1,84 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/usersModel');
-const config = require('../config/config');
-const rounds = 10; // bcrypt salt rounds
+const Users = require('../models/userProvider');
+const rounds = 10;
+const { allowedRoles } = require('../config/constants');
+const { generateToken, generateRefreshToken } = require('../utils/jwtUtils');
 
-// Register User
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, preferences = [] } = req.body;
+    let { name, email, password, role = 'user', preferences, language } = req.body;
 
-    // Basic validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email, and password are required.' });
     }
+    const normalizedEmail = email.toLowerCase();
 
-    // Check for duplicate user
-    const existingUser = await User.findByEmail(email);
+    const existingUser = await Users.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists with this email.' });
     }
 
-    // Role handling
-    const allowedRoles = ['user', 'admin'];
+    const hashedPassword = await bcrypt.hash(password, rounds);
     const userRole = allowedRoles.includes(role) ? role : 'user';
+    const userPreferences = {
+      categories: preferences,
+      language: language
+    };
 
-    // Create user
-    const user = await User.create({
+    const newUser = new Users({
       name,
-      email,
-      password,
+      email: normalizedEmail,
+      password: hashedPassword,
       role: userRole,
-      preferences,
+      preferences: userPreferences
     });
+
+    const savedUser = await newUser.save();
 
     return res.status(200).json({
       message: 'User registered successfully.',
-      user: user.toJSON(),
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+      },
     });
   } catch (error) {
-    console.error('Register Error:', error.message);
+    console.error('Register Error:', error.stack || error.message);
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
 
-// Login User
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
-    // Input validation
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required.' });
     }
+    const normalizedEmail = email.toLowerCase();
 
-    const user = await User.findByEmail(email);
+    const user = await Users.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
 
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
 
-    // Create token payload
-    const payload = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    const accessToken = jwt.sign(payload, config.jwtSecret, {
-      expiresIn: '1h',
-    });
-
-    const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, {
-      expiresIn: '7d',
-    });
+    const tokenPayload = { id: user._id, email: user.email, role: user.role };
+    const token = generateToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
 
     return res.status(200).json({
       message: 'Login successful',
-      token: accessToken,
+      token,
       refreshToken,
     });
   } catch (error) {
-    console.error('Login Error:', error.message);
+    console.error('Login Error:', error.stack || error.message);
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };

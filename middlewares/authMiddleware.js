@@ -1,24 +1,40 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/usersModel');
+const Users = require('../models/userProvider');
 const config = require('../config/config');
 
 const authMiddleware = async (req, res, next) => {
   let token;
 
+  // 1. Check Authorization Header
   if (req.headers.authorization) {
     const authHeader = req.headers.authorization;
-    token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+    token = authHeader.startsWith('Bearer ')
+      ? authHeader.split(' ')[1]
+      : authHeader;
   }
 
-  if (!token && req.token) token = req.token;
-  if (!token && req.cookies?.token) token = req.cookies.token;
+  // 2. Check req.token (if some middleware has set it manually)
+  if (!token && req.token) {
+    token = req.token;
+  }
 
-  if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
+  // 3. Check Cookie
+  if (!token && req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  }
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
+  }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret);
-    const user = await User.findById(decoded.id);
-    if (!user) return res.status(401).json({ message: 'User not found' });
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+    const dbUser = await Users.findById(decoded.id);
+    const user = dbUser && dbUser.select('-password'); // Exclude password from user object
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
 
     req.user = user;
     next();

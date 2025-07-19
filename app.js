@@ -1,45 +1,53 @@
 const express = require('express');
-const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
-
+const connectDB = require('./config/dbConnection.js');
 const authRoutes = require('./routes/authRoutes');
+const requestLogger = require('./middlewares/requestLogger');
 const preferencesRoutes = require('./routes/preferencesRoutes');
+const cookieParser = require('cookie-parser');
 const newsRoutes = require('./routes/newsRoutes');
 const config = require('./config/config');
-const PORT = config.port;
-
-dotenv.config();
 
 const app = express();
-
-// Middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// const requestLogger = require('./middlewares/requestLogger');
-// app.use(requestLogger);
+app.use(requestLogger);
 
 // Routes
 app.get('/', (req, res) => {
-  res.send('Welcome to the News Aggregator API');
+    res.send('Welcome to the News Aggregator API');
 });
 
 app.use('/users', authRoutes);
 app.use('/users/preferences', preferencesRoutes);
 app.use('/news', newsRoutes);
 
-// Global Error Handler
+// Global error handler
 app.use((err, req, res, next) => {
   console.error('Global Error Handler:', err.stack);
   res.status(500).json({ error: 'Something went wrong, please try again later' });
 });
 
-app.listen(PORT, (err) => {
-      if (err) {
-        return console.log('Something bad happened', err);
+const PORT = config.PORT;
+
+// Start server only after DB connects
+const startServer = async () => {
+  try {
+    if (config.useMongoDB) {
+      console.log('Using MongoDB for data storage');
+      await connectDB();
+    } else {
+      console.log('Using in-memory database for data storage');
     }
-    console.log(`Server is listening on ${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to the database:', error.message);
+    process.exit(1);
+  }
+};
+
+// Start the application
+startServer();
 
 module.exports = app;
