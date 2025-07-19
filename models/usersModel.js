@@ -14,9 +14,6 @@ class User {
     this.createdAt = new Date();
   }
 
-  /**
-   * Create and register a new user
-   */
   static async create({ name, email, password, role, preferences = [] }) {
     const existingUser = users.find(u => u.email === email);
     if (existingUser) {
@@ -29,39 +26,25 @@ class User {
     return user;
   }
 
-  /**
-   * Find user by email
-   */
   static async findByEmail(email) {
     return users.find(user => user.email === email);
   }
 
-  /**
-   * Find user by ID
-   */
   static findById(id) {
     return users.find(user => user.id === id);
   }
 
-  /**
-   * Compare password with hashed password
-   */
   async comparePassword(plainPassword) {
     return bcrypt.compare(plainPassword, this.password);
   }
 
-  /**
-   * Update user preferences
-   */
   updatePreferences(preferences) {
     if (Array.isArray(preferences)) {
       this.preferences = preferences;
     }
   }
-
-  /**
-   * Serialize user without sensitive data
-   */
+  
+  // Serialize user without sensitive data
   toJSON() {
     return {
       id: this.id,

@@ -6,6 +6,8 @@ const requestLogger = require('./middlewares/requestLogger');
 const authRoutes = require('./routes/authRoutes');
 const preferencesRoutes = require('./routes/preferencesRoutes');
 const newsRoutes = require('./routes/newsRoutes');
+const config = require('./config/config');
+const PORT = config.port;
 
 dotenv.config();
 
@@ -14,6 +16,7 @@ const app = express();
 // Middlewares
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // Routes
@@ -31,11 +34,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong, please try again later' });
 });
 
-// Start Server (No DB needed)
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, (err) => {
+      if (err) {
+        return console.log('Something bad happened', err);
+    }
+    console.log(`Server is listening on ${PORT}`);
 });
 
 module.exports = app;

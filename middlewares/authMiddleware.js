@@ -20,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
     const user = User.findById(decoded.id);
     if (!user) return res.status(401).json({ message: 'User not found' });
 
-    req.user = user;  // pass user object with methods
+    req.user = user;
     next();
   } catch (err) {
     console.error('JWT Auth Error:', err.message);
