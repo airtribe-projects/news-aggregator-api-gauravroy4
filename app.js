@@ -1,10 +1,10 @@
 const express = require('express');
 const connectDB = require('./config/dbConnection.js');
-const authRoutes = require('./routes/authRoutes');
-const requestLogger = require('./middlewares/requestLogger');
-const preferencesRoutes = require('./routes/preferencesRoutes');
+const authRoutes = require('./src/routes/authRoutes.js');
+const requestLogger = require('./src/middlewares/requestLogger.js');
+const preferencesRoutes = require('./src/routes/preferencesRoutes.js');
 const cookieParser = require('cookie-parser');
-const newsRoutes = require('./routes/newsRoutes');
+const newsRoutes = require('./src/routes/newsRoutes.js');
 const config = require('./config/config');
 
 const app = express();

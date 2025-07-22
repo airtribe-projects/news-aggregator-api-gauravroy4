@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const Users = require('../models/userProvider');
 const rounds = 10;
-const { allowedRoles } = require('../config/constants');
+const { allowedRoles } = require('./../../config/constants');
 const { generateToken, generateRefreshToken } = require('../utils/jwtUtils');
 
 exports.registerUser = async (req, res) => {
