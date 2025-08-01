@@ -1,5 +1,3 @@
-Your README is clear and nicely formatted. To document your improvements and flexibility for both **in-memory** and **MongoDB** storage, here’s how you can expand and update your README:
-
 # 📰 News Aggregator API
 
 A simple RESTful API built with Node.js and Express.js for:
@@ -49,34 +47,34 @@ This project can be run in either:
 │   ├── config.js
 │   ├── constants.js
 │   └── dbConnection.js
-├── controllers/
-│   ├── authController.js
-│   ├── newsController.js
-│   └── preferencesController.js
-├── db/
-│   └── inMemoryDB.js
-├── middlewares/
-│   ├── authMiddleware.js
-│   ├── requestLogger.js
-│   ├── validationHandler.js
-│   └── validators/
-├── models/
-│   ├── userProvider.js       # Switches between MongoDB and in-memory User model
-│   └── usersModel.js         # MongoDB User schema/model
-├── routes/
-│   ├── authRoutes.js
-│   ├── newsRoutes.js
-│   └── preferencesRoutes.js
-├── services/
-│   └── newsService.js
-├── utils/
-│   └── jwtUtils.js           # JWT generation utility
-├── test/
+├── src/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── newsController.js
+│   │   └── preferencesController.js
+│   ├── db/
+│   │   └── inMemoryDB.js
+│   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   ├── requestLogger.js
+│   │   ├── validationHandler.js
+│   │   └── validators/
+│   ├── models/
+│   │   ├── userProvider.js       # Switches between MongoDB and in-memory User model
+│   │   └── usersModel.js         # MongoDB User schema/model
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── newsRoutes.js
+│   │   └── preferencesRoutes.js
+│   ├── services/
+│   │   └── newsService.js
+│   ├── utils/
+│   │   └── jwtUtils.js           # JWT generation utility
+│   └── test/
 ├── .env
 ├── app.js
 ├── package.json
 └── README.md
-```
 
 ## 🔑 API Endpoints
 
