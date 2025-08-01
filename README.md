@@ -43,6 +43,7 @@ This project can be run in either:
 - **All models and controller logic** work seamlessly in both modes due to the dynamic model provider pattern.
 
 ## 📁 Project Structure
+```
 ├── config/
 │   ├── config.js
 │   ├── constants.js
@@ -75,6 +76,7 @@ This project can be run in either:
 ├── app.js
 ├── package.json
 └── README.md
+```
 
 ## 🔑 API Endpoints
 
